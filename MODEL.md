@@ -27,7 +27,7 @@ Columns `C1` and `C4` contain an extremely large number of unique IDs. Using the
 
 
 
-$$TE = \frac{(count \cdot mean) + (smoothing \cdot global\_mean)}{count + smoothing}$$
+$$TE = \frac{(count \cdot mean) + (smoothing \cdot global\mean)}{count + smoothing}$$
 
 * **Smoothing factor (100):** Prevents rare IDs from having extreme weights.
 * **K-Fold Strategy:** Out-of-fold encoding was used to prevent data leakage.
@@ -59,14 +59,24 @@ CatBoost was selected as the primary estimator due to:
 
 ---
 
-## 3. Evaluation Metrics
+## 3. Results and Evaluation
 
-Due to the ~0.9% click rate, accuracy is not a meaningful metric. The following metrics were used:
-
+### 3.1 Evaluation Metrics
+Due to the ~0.9% click rate, accuracy is not a meaningful metric. The following metrics were prioritized:
 * **AUC (Primary Metric):** Measures the ranking quality. It evaluates the model's ability to rank a positive instance higher than a random negative instance.
-* **LogLoss (Secondary Metric):** Measures probability calibration. This ensures the predicted probability is a reliable estimate of the actual click likelihood, which is critical for bidding engines.
+* **LogLoss (Secondary Metric):** Measures probability calibration, ensuring predicted probabilities are reliable for bidding logic.
 
 
+
+### 3.2 Performance Summary
+The hybrid approach of manual smoothed encoding for high-cardinality features combined with native GBDT processing yielded a stable and generalized result:
+
+| Dataset | AUC | LogLoss |
+| :--- | :--- | :--- |
+| **Validation Set** | 0.7610 | 0.0438 |
+| **Test Set** | **0.7242** | **0.0453** |
+
+The minimal gap between Validation and Test metrics demonstrates that the model successfully learned generalized user-item interactions rather than overfitting to specific IDs.
 
 ---
 
@@ -76,5 +86,6 @@ An LLM was utilized during this assignment for the following purposes:
 * Improving code readability, modularity, and structure.
 * Writing and formatting technical documentation (`MODEL.md`).
 * Clarifying theoretical explanations of preprocessing techniques (e.g., Cyclic Encoding and Target Smoothing).
+
 
 *Note: All feature engineering decisions, experimental design, and hyperparameter tuning were directed and verified by the student.*
